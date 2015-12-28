@@ -1,0 +1,42 @@
+#DOCKER SWARM - clusters Docker hosts and schedules containers
+-turns a pool of host machines into a a single virtual host
+-ships with simple scheduling backend
+-supports many discovery backends:	
+	Hosted discovery
+	etcd
+	Consul
+	ZooKeeper
+	Static files
+## HOSTED DISCOVERY
+-create cluster on Master  //creates cluster token to be used for connecting with angents
+-Start Swarm Master
+-Start swarm agent on nodes that have docker installed for clustering
+-please note: Agents can be started before or after master
+## INSTALLATION
+-Most convenient: Docker Swarm Image - https://hub.docker.com/r/library/swarm/
+-Swarm containers can be run from image to do the following:
+	- Create a cluster
+	- Start the Swarm Manager
+	- Join nodes to the cluster
+	- List nodes on a cluster
+$ docker run --rm swarm create //--rm = remove image once it runs (will not show up in Docker ps but will come up in Docker images)
+## START SWARM MANAGER
+$ docker run -d -P swarm manage token://<cluster token>
+$ docker run -d -P swarm manage token://78a7c90e73e3c2b51981a273a0592c89
+## START SWARM NODE
+$ docker run -d swarm join
+	--addr=<node ip>:<daemon port> \
+	token://<cluster token>
+## CONNECT DOCKER client to Swarm
+-point docker client to the Swarm Manager container
+-Two methods:
+	-change DOCKER_HOST variable to poing to Swarm IP and port
+	$ export DOCKER_HOST-127.0.0.1:<swarm port>
+	-Run docker with -H and specify the Swarm IP and port
+	$ docker -H tcp://127.0.0.1:<swarm port>
+-Look at container port mapping to find Swarm Port
+## Run Container in a Cluster
+$ docker run
+-swarm master decides which node to run container on based on scheduling strategy
+https://docs.docker.com/swarm/scheduler/strategy/
+$ docker ps //will show which node a container is on
