@@ -379,3 +379,8 @@ javaclient:       -------> service
 redis:
 	image: redis  -------> service				//existing image somewhere
 -Each service MUST have build or image declaration
+
+# Delete all containers
+docker rm $(docker ps -a -q)
+# Delete all images
+docker rmi $(docker images -q)
